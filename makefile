@@ -26,13 +26,13 @@ main:
 frame: 
 	g++ $(SRC_PATH)/frame/frame.cpp \
 		-o $(BUILD_PATH)/frame \
-		$(THREAD_LIBS) $(OPENCV_LIBS) -DOPENCV
+		$(THREAD_LIBS) $(OPENCV_LIBS)
 	@cp $(BUILD_PATH)/frame $(BIN_PATH)/frame
 
-frame_local: 
-	g++ $(SRC_PATH)/frame/frame.cpp \
-		-o $(BUILD_PATH)/frame \
-		$(THREAD_LIBS)
+# frame_local: 
+# 	g++ $(SRC_PATH)/frame/frame.cpp \
+# 		-o $(BUILD_PATH)/frame \
+# 		$(THREAD_LIBS)
 
 clock: 
 	g++ $(SRC_PATH)/clock/clock.cpp \

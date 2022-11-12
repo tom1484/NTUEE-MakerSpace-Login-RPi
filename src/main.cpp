@@ -18,7 +18,7 @@ const u_int8_t COLOR_RED[3] = {255, 0, 0};
 const u_int8_t COLOR_GREEN[3] = {0, 255, 0};
 const u_int8_t COLOR_BLUE[3] = {0, 0, 255};
 
-const double FT_HEIGHT = 300;
+const double FT_HEIGHT = 75;
 const int THICKNESS = -1;
 
 void on_sigint(int signum);
@@ -97,6 +97,7 @@ int main()
                         std::string welcome_message = display_name;
                         std::cout << welcome_message << std::endl;
 
+                        registering = false;
                         show_text(true, true, 3000, COLOR_BLACK, COLOR_GREEN, FT_HEIGHT, THICKNESS, welcome_message);
                     }
                     else
