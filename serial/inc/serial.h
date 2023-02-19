@@ -1,5 +1,5 @@
-#ifndef SERIAL_HPP_
-#define SERIAL_HPP_
+#ifndef SERIAL_H
+#define SERIAL_H
 
 #include <stdio.h>
 #include <string.h>

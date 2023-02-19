@@ -1,4 +1,4 @@
-#include "serial.hpp"
+#include "serial.h"
 
 void Serial::scanner(
     int stream_id,

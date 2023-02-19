@@ -1,4 +1,4 @@
-#include "connection.hpp"
+#include "connection.h"
 
 void Connection::initialize(std::string _base_url)
 {

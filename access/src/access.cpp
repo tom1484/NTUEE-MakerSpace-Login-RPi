@@ -1,7 +1,9 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <time.h>
+#include <sys/stat.h>
 #include <string.h>
 
 #include <iostream>
@@ -9,8 +11,8 @@
 #include <ctime>
 #include <csignal>
 
-#include "serial/serial.hpp"
-#include "connection/connection.hpp"
+#include "serial.h"
+#include "connection.h"
 
 const u_int8_t COLOR_WHITE[3] = {255, 255, 255};
 const u_int8_t COLOR_BLACK[3] = {0, 0, 0};
@@ -18,7 +20,7 @@ const u_int8_t COLOR_RED[3] = {255, 0, 0};
 const u_int8_t COLOR_GREEN[3] = {0, 255, 0};
 const u_int8_t COLOR_BLUE[3] = {0, 0, 255};
 
-const double FT_HEIGHT = 300;
+const double FT_HEIGHT = 75;
 const int THICKNESS = -1;
 
 void on_sigint(int signum);
@@ -41,7 +43,7 @@ void show_text(
     double ft_height, int thickness,
     std::string text);
 
-const char *SERIAL_DEV = "/dev/ttyACM0";
+const char *SERIAL_DEV = "/dev/ttyUSB0";
 const int BAUD_RATE = 9600;
 const char START_SYMBOL = '\t';
 const char STOP_SYMBOL = '\n';
@@ -97,6 +99,7 @@ int main()
                         std::string welcome_message = display_name;
                         std::cout << welcome_message << std::endl;
 
+                        registering = false;
                         show_text(true, true, 3000, COLOR_BLACK, COLOR_GREEN, FT_HEIGHT, THICKNESS, welcome_message);
                     }
                     else

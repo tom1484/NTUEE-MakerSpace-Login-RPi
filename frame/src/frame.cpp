@@ -16,12 +16,10 @@
 #include <functional>
 #include <csignal>
 
-#ifdef OPENCV
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/freetype.hpp>
-#endif
 
 void on_sigint(int signum);
 
@@ -39,56 +37,36 @@ void show_text(
     u_int8_t *ft_color, u_int8_t *bg_color,
     double ft_height, int thickness);
 
-void timer(std::function<void()> task, int id, int peroid);
+const int FRAME_WIDTH = 480;
+const int FRAME_HEIGHT = 320;
 
-#ifdef OPENCV
 std::ofstream ofs;
 int width, height;
 cv::Ptr<cv::freetype::FreeType2> ft2;
-#endif
 
 bool frame_locked;
 int timer_id;
 std::thread timer_thread;
 
-#ifdef OPENCV
-void initialize(int _fb, int _width, int _height)
-{
-
-    // set frame dimension
-    width = _width;
-    height = _height;
-
-    // set framebuffer stream
-    std::string fbDevice = "/dev/fb";
-    fbDevice += std::to_string(_fb);
-    ofs.open(fbDevice.c_str());
-
-    ft2 = cv::freetype::createFreeType2();
-    ft2->loadFontData("./FiraCode.ttf", 0);
-
-    timer_id = 0;
-    frame_locked = false;
-}
-#endif
-
-std::thread clock_listener_thread;
-std::thread message_listener_thread;
+void initialize(int _fb, int _width, int _height);
 
 int clock_pipe_id;
 int message_pipe_id;
 
+std::thread clock_listener_thread;
+std::thread message_listener_thread;
+
 bool clock_listener_thread_end;
 bool message_listener_thread_end;
 
+void timer(std::function<void()> task, int id, int peroid);
 void pipe_listener(const char *pipe_path, bool *thread_end);
 
-int main()
+int main(int argc, char *argv[])
 {
     signal(SIGINT, on_sigint);
-#ifdef OPENCV
-    initialize(0, 1920, 1080);
-#endif
+    initialize(atoi(argv[1]), FRAME_WIDTH, FRAME_HEIGHT);
+
     clock_listener_thread_end = false;
     clock_listener_thread = std::thread(
         pipe_listener, "/tmp/clock_pipe", &clock_listener_thread_end);
@@ -187,6 +165,25 @@ void pipe_listener(const char *pipe_path, bool *thread_end)
     return;
 }
 
+void initialize(int _fb, int _width, int _height)
+{
+
+    // set frame dimension
+    width = _width;
+    height = _height;
+
+    // set framebuffer stream
+    std::string fb_device = "/dev/fb";
+    fb_device += std::to_string(_fb);
+    ofs.open(fb_device.c_str());
+
+    ft2 = cv::freetype::createFreeType2();
+    ft2->loadFontData("./FiraCode.ttf", 0);
+
+    timer_id = 0;
+    frame_locked = false;
+}
+
 void timer(std::function<void()> task, int id, int period)
 {
     auto startClock = std::chrono::high_resolution_clock::now();
@@ -244,10 +241,6 @@ void parse_frame_data(
 
 void show_text(char *text, u_int8_t *ft_color, u_int8_t *bg_color, double ft_height, int thickness)
 {
-#ifndef OPENCV
-    printf("%s\n", text);
-#endif
-#ifdef OPENCV
     std::string text_str = std::string(text);
     cv::Scalar ft_color_cv = cv::Scalar(ft_color[0], ft_color[1], ft_color[2]);
     cv::Scalar bg_color_cv = cv::Scalar(bg_color[0], bg_color[1], bg_color[2]);
@@ -283,11 +276,15 @@ void show_text(char *text, u_int8_t *ft_color, u_int8_t *bg_color, double ft_hei
         ft2->putText(image, line, origin, ft_height, ft_color_cv, thickness, 8, true);
     }
 
-    cv::cvtColor(image, framebuffer_compat, cv::COLOR_RGB2BGR565);
+    cv::cvtColor(image, framebuffer_compat, cv::COLOR_RGB2BGRA);
     for (int y = 0; y < height; y++)
     {
-        ofs.seekp(y * width * 2);
-        ofs.write(reinterpret_cast<char *>(framebuffer_compat.ptr(y)), width * 2);
+        ofs.seekp(y * width * 4);
+        ofs.write(reinterpret_cast<char *>(framebuffer_compat.ptr(y)), width * 4);
     }
-#endif
+    // for (int y = 0; y < height; y++)
+    // {
+    //     ofs.seekp(y * width * 2);
+    //     ofs.write(reinterpret_cast<char *>(image.ptr(y)), width * 2);
+    // }
 }

@@ -1,5 +1,5 @@
-#ifndef CONNECTION_HPP_
-#define CONNECTION_HPP_
+#ifndef CONNECTION_H
+#define CONNECTION_H
 
 #include <iostream>
 #include <fstream>

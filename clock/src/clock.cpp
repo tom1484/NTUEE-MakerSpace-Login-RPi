@@ -19,7 +19,7 @@ const u_int8_t COLOR_RED[3] = {255, 0, 0};
 const u_int8_t COLOR_GREEN[3] = {0, 255, 0};
 const u_int8_t COLOR_BLUE[3] = {0, 0, 255};
 
-const double FT_HEIGHT = 300;
+const double FT_HEIGHT = 75;
 const int THICKNESS = -1;
 
 void on_sigint(int signum);
@@ -54,7 +54,7 @@ int main()
     signal(SIGPIPE, on_sigpipe);
     // printf("I am %d process.\n", getpid());
 
-    while ((pipe_id = open(pipe_path, O_WRONLY | O_NONBLOCK)) < 0)
+    while((pipe_id = open(pipe_path, O_WRONLY | O_NONBLOCK)) < 0)
     {
     }
     std::cout << "Pipe " << pipe_path << " opened" << std::endl;
