@@ -51,7 +51,7 @@ const char STOP_SYMBOL = '\n';
 std::string get_timestamp_str();
 bool parse_input(std::string input, int *type, std::string *rfid, std::string *student_id);
 
-const std::string BASE_URL = "140.112.174.222:1484/mks_access";
+const std::string BASE_URL = "140.112.194.49:1484/mks_access";
 
 const char *pipe_path = "/tmp/message_pipe";
 int pipe_id;
